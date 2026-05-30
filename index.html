@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>端午奪粽大作戰 - 全模式生命限時版</title>
+    <title>端午奪粽大作戰 - 內建大按鍵登入版</title>
     <style>
         /* ==========================================================================
            1. 基礎樣式與全螢幕佈局
@@ -31,260 +31,168 @@
         }
 
         /* ==========================================================================
+           🔑 新增：專為長者設計的超大按鍵登入頁面樣式
+           ========================================================================== */
+        .login-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #071e22; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 200; padding: 20px;
+        }
+        .login-screen.hide { display: none; }
+        .login-title { font-size: 46px; color: #52b788; margin-bottom: 5px; text-shadow: 0 0 15px rgba(82,183,136,0.4); }
+        .login-subtitle { font-size: 20px; color: #94a3b8; margin-bottom: 25px; }
+        
+        /* 顯示輸入密碼與號碼的方框 */
+        .input-display-container {
+            width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
+        }
+        .input-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 15px; padding: 10px 20px; cursor: pointer;
+        }
+        .input-row.active { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.3); }
+        .input-label { font-size: 20px; font-weight: bold; color: #cbd5e1; }
+        .input-box-value { font-size: 28px; font-weight: bold; color: #39ff14; min-height: 35px; letter-spacing: 2px; }
+
+        /* 超大虛擬數字鍵盤 */
+        .keyboard-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 400px;
+        }
+        .key-btn {
+            background: linear-gradient(135deg, #14362a, #2d6a4f); border: 2px solid #52b788;
+            color: #ffffff; font-size: 32px; font-weight: bold; border-radius: 15px;
+            padding: 15px 0; cursor: pointer; text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.05s;
+        }
+        .key-btn:active { transform: scale(0.92); filter: brightness(1.3); }
+        .key-btn.clear { background: linear-gradient(135deg, #bd1f36, #72091e); border-color: #ff4d6d; font-size: 24px; }
+        .key-btn.confirm { background: linear-gradient(135deg, #ffb703, #fb8500); border-color: #ffb703; font-size: 24px; }
+
+        .login-error-text { font-size: 18px; color: #ff0055; font-weight: bold; min-height: 25px; margin-top: 15px; }
+
+        /* ==========================================================================
            2. 頂部資訊看板
            ========================================================================== */
         .header-bar {
-            width: 100%;
-            max-width: 950px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px;
-            z-index: 10;
+            width: 100%; max-width: 950px; display: flex; justify-content: space-between; align-items: center; padding: 5px; z-index: 10;
         }
         .stat-box {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 8px 20px;
-            border-radius: 18px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            text-align: center;
-            min-width: 150px;
+            background: rgba(255, 255, 255, 0.06); padding: 8px 20px; border-radius: 18px; border: 2px solid rgba(255, 255, 255, 0.15); text-align: center; min-width: 150px;
         }
-        .stat-label {
-            font-size: 15px;
-            color: #cbd5e1;
-            margin-bottom: 2px;
-            font-weight: bold;
-        }
-        .stat-value {
-            font-size: 34px;
-            font-weight: bold;
-        }
+        .stat-label { font-size: 15px; color: #cbd5e1; margin-bottom: 2px; font-weight: bold; }
+        .stat-value { font-size: 34px; font-weight: bold; }
         .score-value { color: #39ff14; text-shadow: 0 0 10px rgba(57,255,20,0.5); }
         .time-value { color: #ffb703; text-shadow: 0 0 10px rgba(255,183,3,0.5); }
         .player-value { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.5); }
-        
-        /* 龍舟生命值樣式 */
-        .boats-container {
-            font-size: 28px;
-            letter-spacing: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 42px;
-            text-shadow: 0 0 10px rgba(0,255,204,0.4);
-        }
+        .boats-container { font-size: 28px; letter-spacing: 5px; display: flex; justify-content: center; align-items: center; height: 42px; text-shadow: 0 0 10px rgba(0,255,204,0.4); }
 
         /* ==========================================================================
            3. 核心舞台
            ========================================================================== */
-        .game-stage {
-            flex-grow: 1;
-            width: 100vw;
-            max-width: 720px; 
-            max-height: 720px;
-            display: grid;
-            gap: 8px; 
-            padding: 5px;
-            margin: auto 0;
-        }
-        .game-stage.grid-25 {
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(5, 1fr);    
-        }
-        .game-stage.grid-36 {
-            grid-template-columns: repeat(6, 1fr); 
-            grid-template-rows: repeat(6, 1fr);    
-            max-width: 760px;
-            max-height: 760px;
-        }
-
-        .hole {
-            position: relative;
-            background: #14362a; 
-            border-radius: 50%;
-            border: 4px solid #2d6a4f; 
-            box-shadow: inset 0 6px 12px rgba(0,0,0,0.8), 0 3px 8px rgba(0,0,0,0.4);
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
-        }
-
-        .mole {
-            position: absolute;
-            bottom: -100%;
-            left: 2%;
-            width: 96%; 
-            height: 96%;
-            transition: bottom 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        .game-stage { flex-grow: 1; width: 100vw; max-width: 720px; max-height: 720px; display: grid; gap: 8px; padding: 5px; margin: auto 0; }
+        .game-stage.grid-25 { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); }
+        .game-stage.grid-36 { grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); max-width: 760px; max-height: 760px; }
+        .hole { position: relative; background: #14362a; border-radius: 50%; border: 4px solid #2d6a4f; box-shadow: inset 0 6px 12px rgba(0,0,0,0.8), 0 3px 8px rgba(0,0,0,0.4); overflow: hidden; aspect-ratio: 1 / 1; }
+        .mole { position: absolute; bottom: -100%; left: 2%; width: 96%; height: 96%; transition: bottom 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .mole.up { bottom: 2%; }
 
         /* 🎋 角色 A：端午節肉粽公仔 */
-        .zongzi-doll {
-            display: none;
-            width: 95%; height: 95%;
-            position: relative;
-            background: linear-gradient(135deg, #52b788, #2d6a4f); 
-            clip-path: polygon(50% 0%, 100% 85%, 85% 100%, 15% 100%, 0% 85%);
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 15px rgba(82, 183, 136, 0.6);
-        }
+        .zongzi-doll { display: none; width: 95%; height: 95%; position: relative; background: linear-gradient(135deg, #52b788, #2d6a4f); clip-path: polygon(50% 0%, 100% 85%, 85% 100%, 15% 100%, 0% 85%); border: 2px solid #ffffff; box-shadow: 0 0 15px rgba(82, 183, 136, 0.6); }
         .mole.good .zongzi-doll { display: block; }
-        .zongzi-doll .rope {
-            position: absolute; top: 56%; left: 0; width: 100%; height: 5px;
-            background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        .zongzi-doll .rope-badge {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 10px; height: 10px; background-color: #ffb703; border-radius: 50%;
-        }
-        .zongzi-doll .eye {
-            position: absolute; top: 35%; width: 8px; height: 12px; background-color: #071e22; border-radius: 50%;
-        }
-        .zongzi-doll .eye.left { left: 28%; }
-        .zongzi-doll .eye.right { right: 28%; }
-        .zongzi-doll .eye::after {
-            content: ''; position: absolute; top: 1.5px; left: 1.5px; width: 2.5px; height: 2.5px; background-color: #fff; border-radius: 50%;
-        }
-        .zongzi-doll .blush {
-            position: absolute; top: 45%; width: 10px; height: 5px; background-color: #ff007f; border-radius: 50%; opacity: 0.6;
-        }
-        .zongzi-doll .blush.left { left: 14%; }
-        .zongzi-doll .blush.right { right: 14%; }
-        .zongzi-doll .mouth {
-            position: absolute; top: 46%; left: 50%; transform: translateX(-50%);
-            width: 14px; height: 8px; background-color: #ff4d6d; border-radius: 0 0 10px 10px; border: 1px solid #071e22;
-        }
-        .zongzi-doll .horn {
-            position: absolute; top: 1px; width: 7px; height: 10px; background-color: #ffb703; border-radius: 50% 50% 0 0;
-        }
-        .zongzi-doll .horn.left { left: 20%; transform: rotate(-25deg); }
-        .zongzi-doll .horn.right { right: 20%; transform: rotate(25deg); }
+        .zongzi-doll .rope { position: absolute; top: 56%; left: 0; width: 100%; height: 5px; background-color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .zongzi-doll .rope-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #ffb703; border-radius: 50%; }
+        .zongzi-doll .eye { position: absolute; top: 35%; width: 8px; height: 12px; background-color: #071e22; border-radius: 50%; }
+        .zongzi-doll .eye.left { left: 28%; } .zongzi-doll .eye.right { right: 28%; }
+        .zongzi-doll .eye::after { content: ''; position: absolute; top: 1.5px; left: 1.5px; width: 2.5px; height: 2.5px; background-color: #fff; border-radius: 50%; }
+        .zongzi-doll .blush { position: absolute; top: 45%; width: 10px; height: 5px; background-color: #ff007f; border-radius: 50%; opacity: 0.6; }
+        .zongzi-doll .blush.left { left: 14%; } .zongzi-doll .blush.right { right: 14%; }
+        .zongzi-doll .mouth { position: absolute; top: 46%; left: 50%; transform: translateX(-50%); width: 14px; height: 8px; background-color: #ff4d6d; border-radius: 0 0 10px 10px; border: 1px solid #071e22; }
+        .zongzi-doll .horn { position: absolute; top: 1px; width: 7px; height: 10px; background-color: #ffb703; border-radius: 50% 50% 0 0; }
+        .zongzi-doll .horn.left { left: 20%; transform: rotate(-25deg); } .zongzi-doll .horn.right { right: 20%; transform: rotate(25deg); }
 
         /* 💣 角色 B：霓虹復古大炸彈 */
-        .bomb-doll {
-            display: none;
-            width: 90%; height: 90%;
-            background: linear-gradient(135deg, #ff4500, #ff007f);
-            border-radius: 50%;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
-            position: relative;
-        }
+        .bomb-doll { display: none; width: 90%; height: 90%; background: linear-gradient(135deg, #ff4500, #ff007f); border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 20px rgba(255, 69, 0, 0.8); position: relative; }
         .mole.bomb .bomb-doll { display: block; }
-        .bomb-doll .fuse-top {
-            position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
-            width: 14px; height: 8px; background-color: #333; border: 1px solid #fff; border-radius: 2px;
-        }
-        .bomb-doll .fuse-cord {
-            position: absolute; top: -14px; left: 55%; width: 2.5px; height: 10px; background-color: #ffb703; transform: rotate(15deg); box-shadow: 0 0 5px #ffb703;
-        }
+        .bomb-doll .fuse-top { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 14px; height: 8px; background-color: #333; border: 1px solid #fff; border-radius: 2px; }
+        .bomb-doll .fuse-cord { position: absolute; top: -14px; left: 55%; width: 2.5px; height: 10px; background-color: #ffb703; transform: rotate(15deg); box-shadow: 0 0 5px #ffb703; }
         .bomb-doll .cross-eye { position: absolute; top: 32%; width: 14px; height: 14px; }
-        .bomb-doll .cross-eye.left { left: 20%; }
-        .bomb-doll .cross-eye.right { right: 20%; }
-        .bomb-doll .cross-eye::before, .bomb-doll .cross-eye::after {
-            content: ''; position: absolute; top: 6px; left: 0; width: 14px; height: 2.5px; background-color: #ffffff; border-radius: 1.5px;
-        }
-        .bomb-doll .cross-eye::before { transform: rotate(45deg); }
-        .bomb-doll .cross-eye::after { transform: rotate(-45deg); }
+        .bomb-doll .cross-eye.left { left: 20%; } .bomb-doll .cross-eye.right { right: 20%; }
+        .bomb-doll .cross-eye::before, .bomb-doll .cross-eye::after { content: ''; position: absolute; top: 6px; left: 0; width: 14px; height: 2.5px; background-color: #ffffff; border-radius: 1.5px; }
+        .bomb-doll .cross-eye::before { transform: rotate(45deg); } .bomb-doll .cross-eye::after { transform: rotate(-45deg); }
         .bomb-doll .brow { position: absolute; top: 18%; width: 14px; height: 3px; background-color: #000000; border-radius: 1.5px; }
-        .bomb-doll .brow.left { left: 16%; transform: rotate(20deg); }
-        .bomb-doll .brow.right { right: 16%; transform: rotate(-20deg); }
+        .bomb-doll .brow.left { left: 16%; transform: rotate(20deg); } .bomb-doll .brow.right { right: 16%; transform: rotate(-20deg); }
 
         /* 特效與動畫 */
         .mole.hit { filter: brightness(2) scale(0.85); transition: all 0.05s ease-out; }
-        .floating-text {
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            font-size: 32px; font-weight: bold; pointer-events: none; z-index: 55;
-            animation: floatUp 0.6s ease-out forwards;
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; top: 30%; transform: translateX(-50%) scale(0.8); }
-            100% { opacity: 0; top: -50%; transform: translateX(-50%) scale(1.4); }
-        }
-
-        /* 升級與受傷閃爍 */
-        @keyframes flashUpgrade {
-            0% { background: rgba(0, 255, 204, 0.2); transform: scale(1); }
-            50% { background: rgba(0, 255, 204, 0.6); transform: scale(1.05); }
-            100% { background: rgba(255, 255, 255, 0.06); transform: scale(1); }
-        }
+        .floating-text { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 32px; font-weight: bold; pointer-events: none; z-index: 55; animation: floatUp 0.6s ease-out forwards; }
+        @keyframes floatUp { 0% { opacity: 1; top: 30%; transform: translateX(-50%) scale(0.8); } 100% { opacity: 0; top: -50%; transform: translateX(-50%) scale(1.4); } }
+        @keyframes flashUpgrade { 0% { background: rgba(0, 255, 204, 0.2); transform: scale(1); } 50% { background: rgba(0, 255, 204, 0.6); transform: scale(1.05); } 100% { background: rgba(255, 255, 255, 0.06); transform: scale(1); } }
         .flash-upgrade { animation: flashUpgrade 0.5s ease-out 2; }
-        
-        @keyframes flashDamage {
-            0% { background: rgba(255, 0, 85, 0.4); }
-            100% { background: #071e22; }
-        }
+        @keyframes flashDamage { 0% { background: rgba(255, 0, 85, 0.4); } 100% { background: #071e22; } }
         .flash-damage { animation: flashDamage 0.4s ease-out 1; }
 
         /* ==========================================================================
            4. 底部引導欄
            ========================================================================== */
-        .footer-bar {
-            width: 100%; max-width: 850px; text-align: center; padding: 5px 10px 15px 10px;
-        }
-        .tip-text {
-            font-size: 20px; color: #f8fafc; background: rgba(255, 255, 255, 0.08);
-            padding: 10px 36px; border-radius: 40px; display: inline-block;
-            border: 2px solid rgba(82, 183, 136, 0.4);
-        }
+        .footer-bar { width: 100%; max-width: 850px; text-align: center; padding: 5px 10px 15px 10px; }
+        .tip-text { font-size: 20px; color: #f8fafc; background: rgba(255, 255, 255, 0.08); padding: 10px 36px; border-radius: 40px; display: inline-block; border: 2px solid rgba(82, 183, 136, 0.4); }
         .tip-text span { color: #39ff14; font-weight: bold; }
         .tip-text em { color: #ff4500; font-weight: bold; font-style: normal; }
 
         /* ==========================================================================
            5. 滿版大畫面覆蓋層
            ========================================================================== */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(7, 30, 34, 0.98);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; padding: 30px; text-align: center;
-        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 30, 34, 0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; padding: 30px; text-align: center; }
         .overlay.hide { display: none; }
-        .overlay h1 {
-            font-size: 56px; color: #52b788; margin-bottom: 15px;
-            text-shadow: 0 0 25px rgba(82,183,136,0.5);
-        }
-        .overlay p {
-            font-size: 24px; color: #94a3b8; margin-bottom: 25px; line-height: 1.6; max-width: 750px;
-        }
-
+        .overlay h1 { font-size: 56px; color: #52b788; margin-bottom: 15px; text-shadow: 0 0 25px rgba(82,183,136,0.5); }
+        .overlay p { font-size: 24px; color: #94a3b8; margin-bottom: 25px; line-height: 1.6; max-width: 750px; }
         .selector-title { font-size: 24px; color: #ffb703; font-weight: bold; margin-bottom: 12px; }
         .time-options { display: flex; gap: 20px; margin-bottom: 30px; }
-        .opt-btn {
-            font-size: 24px; font-weight: bold; color: #ffffff; background: rgba(255, 255, 255, 0.08);
-            border: 3px solid rgba(255,255,255,0.2); padding: 12px 35px; border-radius: 15px; cursor: pointer;
-            transition: all 0.2s;
-        }
-        .opt-btn.active {
-            background: #2d6a4f; border-color: #39ff14; box-shadow: 0 0 20px rgba(57,255,20,0.4); transform: scale(1.05);
-        }
-
-        .result-card {
-            background: rgba(255, 255, 255, 0.04); border: 3px solid #52b788;
-            border-radius: 28px; padding: 35px 60px; margin-bottom: 40px;
-            box-shadow: 0 0 40px rgba(82,183,136,0.2); display: flex; gap: 40px;
-        }
+        .opt-btn { font-size: 24px; font-weight: bold; color: #ffffff; background: rgba(255, 255, 255, 0.08); border: 3px solid rgba(255,255,255,0.2); padding: 12px 35px; border-radius: 15px; cursor: pointer; transition: all 0.2s; }
+        .opt-btn.active { background: #2d6a4f; border-color: #39ff14; box-shadow: 0 0 20px rgba(57,255,20,0.4); transform: scale(1.05); }
+        .result-card { background: rgba(255, 255, 255, 0.04); border: 3px solid #52b788; border-radius: 28px; padding: 35px 60px; margin-bottom: 40px; box-shadow: 0 0 40px rgba(82,183,136,0.2); display: flex; gap: 40px; }
         .result-sub-box { text-align: center; }
         .result-score { font-size: 64px; font-weight: bold; color: #39ff14; text-shadow: 0 0 25px rgba(57,255,20,0.5); }
-        
-        .btn-start {
-            font-size: 32px; font-weight: bold; color: #071e22;
-            background: linear-gradient(135deg, #52b788, #39ff14);
-            border: none; padding: 22px 70px; border-radius: 60px; cursor: pointer;
-            box-shadow: 0 8px 30px rgba(57, 255, 20, 0.5);
-        }
+        .btn-start { font-size: 32px; font-weight: bold; color: #071e22; background: linear-gradient(135deg, #52b788, #39ff14); border: none; padding: 22px 70px; border-radius: 60px; cursor: pointer; box-shadow: 0 8px 30px rgba(57, 255, 20, 0.5); }
         .btn-start:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-    <!-- 頂部資訊看板 -->
+    <div id="login-screen" class="login-screen">
+        <h1 class="login-title">端午奪粽大作戰</h1>
+        <p class="login-subtitle">歡迎光臨！請在下方點擊輸入您的號碼與密碼</p>
+        
+        <div class="input-display-container">
+            <div id="row-number" class="input-row active" onclick="switchLoginTarget('number')">
+                <span class="input-label">登入號碼：</span>
+                <span id="display-number" class="input-box-value"></span>
+            </div>
+            <div id="row-password" class="input-row" onclick="switchLoginTarget('password')">
+                <span class="input-label">輸入密碼：</span>
+                <span id="display-password" class="input-box-value"></span>
+            </div>
+        </div>
+
+        <div class="keyboard-grid">
+            <button class="key-btn" onclick="pressKey('1')">1</button>
+            <button class="key-btn" onclick="pressKey('2')">2</button>
+            <button class="key-btn" onclick="pressKey('3')">3</button>
+            <button class="key-btn" onclick="pressKey('4')">4</button>
+            <button class="key-btn" onclick="pressKey('5')">5</button>
+            <button class="key-btn" onclick="pressKey('6')">6</button>
+            <button class="key-btn" onclick="pressKey('7')">7</button>
+            <button class="key-btn" onclick="pressKey('8')">8</button>
+            <button class="key-btn" onclick="pressKey('9')">9</button>
+            <button class="key-btn clear" onclick="pressKey('CLEAR')">清除❌</button>
+            <button class="key-btn" onclick="pressKey('0')">0</button>
+            <button class="key-btn confirm" onclick="pressKey('CONFIRM')">確認進入</button>
+        </div>
+        
+        <div id="login-error" class="login-error-text"></div>
+    </div>
+
     <div class="header-bar">
         <div class="stat-box">
             <div class="stat-label">遊戲模式</div>
@@ -304,20 +212,16 @@
         </div>
     </div>
 
-    <!-- 核心主舞台 (自動依據人數切換 25格 或 36格) -->
     <div class="game-stage grid-25" id="game-stage"></div>
 
-    <!-- 底部說明 -->
     <div class="footer-bar">
         <div class="tip-text">看到 <span>🎋端午肉粽公仔</span> 快點擊！看到 <em>💣生氣大炸彈</em> 不要點喔！</div>
     </div>
 
-    <!-- 開始畫面 -->
-    <div id="start-overlay" class="overlay">
+    <div id="start-overlay" class="overlay hide">
         <h1>端午奪粽大作戰</h1>
-        <p>全模式限時生命挑戰！每隊共享 3 隻龍舟機會，生命值扣完即提早結算！<br>多人模式下，按錯炸彈會讓龍舟翻船扣血。4 人合作模式會自動開啟 36 格大戰場，請設定遊戲參數：</p>
+        <p>全模式限時生命挑戰！每隊共享 3 隻龍舟機會，生命值扣完即提早結算！<br>在 1 人玩模式下，按錯炸彈或漏點肉粽會觸發獨立專注懲罰，扣血並讓龍舟翻船減速！<br>4 人合作模式會自動開啟 36 格大戰場，請設定遊戲參數：</p>
         
-        <!-- 人數選擇 -->
         <div class="selector-title">選擇參與人數</div>
         <div class="time-options" style="margin-bottom: 25px;">
             <button class="opt-btn active" id="p1-btn" onclick="selectPlayers(1, this)">🙋 1 人玩</button>
@@ -325,7 +229,6 @@
             <button class="opt-btn" id="p4-btn" onclick="selectPlayers(4, this)">🔥 4 人合作模式</button>
         </div>
 
-        <!-- 時間選擇 -->
         <div class="selector-title">設定一局的時間</div>
         <div class="time-options" style="margin-bottom: 40px;">
             <button class="opt-btn" onclick="selectTime(30, this)">30 秒體驗</button>
@@ -336,7 +239,6 @@
         <button class="btn-start" onclick="startGame()">開啟音樂衝刺龍舟</button>
     </div>
 
-    <!-- 結算畫面 -->
     <div id="result-overlay" class="overlay hide">
         <h1 id="result-title">團隊活化大成功</h1>
         <p id="result-desc">配合著輕快熱鬧的背景音樂，大家的默契與反應力表現得非常精彩！</p>
@@ -358,7 +260,75 @@
         let bgmNode = null; 
 
         /* ==========================================================================
-           🎵 音效與動態背景音樂
+           🔑 新增：虛擬按鍵登入頁面控制邏輯
+           ========================================================================== */
+        let loginNumber = "";
+        let loginPassword = "";
+        let currentInputTarget = "number"; // number 或者是 password
+
+        function switchLoginTarget(target) {
+            currentInputTarget = target;
+            playSound('success'); // 點擊回饋音
+            document.getElementById('row-number').classList.remove('active');
+            document.getElementById('row-password').classList.remove('active');
+            if (target === 'number') document.getElementById('row-number').classList.add('active');
+            else document.getElementById('row-password').classList.add('active');
+        }
+
+        function pressKey(key) {
+            document.getElementById('login-error').innerText = ""; // 清除錯誤
+            
+            if (key === 'CLEAR') {
+                playSound('bomb');
+                if (currentInputTarget === "number") {
+                    loginNumber = "";
+                    document.getElementById('display-number').innerText = "";
+                } else {
+                    loginPassword = "";
+                    document.getElementById('display-password').innerText = "";
+                }
+                return;
+            }
+
+            if (key === 'CONFIRM') {
+                // 💡 登入驗證（長者體驗版：防卡關，只要有輸入任何內容，或者是設定一組簡單的預設通關密語即可）
+                if (loginNumber === "" || loginPassword === "") {
+                    playSound('bomb');
+                    document.getElementById('login-error').innerText = "⚠️ 請填寫完整的號碼與密碼喔！";
+                    return;
+                }
+                
+                // 登入成功：播放歡樂音效並切換畫面
+                playSound('success');
+                if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+                
+                // 音效環境再確認
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                // 隱藏登入頁，展現設定頁
+                document.getElementById('login-screen').classList.add('hide');
+                document.getElementById('start-overlay').classList.remove('hide');
+                return;
+            }
+
+            // 輸入數字邏輯
+            playSound('success');
+            if (currentInputTarget === "number") {
+                if (loginNumber.length < 8) { // 限制長度
+                    loginNumber += key;
+                    document.getElementById('display-number').innerText = loginNumber;
+                }
+            } else {
+                if (loginPassword.length < 6) {
+                    loginPassword += key;
+                    // 密碼用星號遮蔽，保護長者隱私
+                    document.getElementById('display-password').innerText = "*".repeat(loginPassword.length);
+                }
+            }
+        }
+
+        /* ==========================================================================
+           🎵 音效與主要背景音樂
            ========================================================================= */
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -429,7 +399,7 @@
         }
 
         /* ==========================================================================
-           ⏱ 核心遊戲與計時命值業務算法
+           ⏱ 遊戲控制核心算法
            ========================================================================== */
         let moles; 
         let score = 0;
@@ -523,7 +493,6 @@
                             }
 
                         } else if (mole.classList.contains('bomb')) {
-                            // 💡 按錯炸彈：1人玩模式觸發獨立專注懲罰；多人模式一樣扣除生命值並跳出翻船字體，但多人模式不執行強震動與紅光閃爍
                             if (playerCount === 1) {
                                 handleDamage("🛶 龍舟翻船啦！");
                             } else {
@@ -533,7 +502,6 @@
                                 if (lives <= 0) {
                                     endGame(true);
                                 } else {
-                                    // 多人合作按錯炸彈一樣彈出「龍舟翻船啦！」大字提示團隊
                                     const currentMoles = document.querySelectorAll('.mole.up');
                                     if (currentMoles.length > 0) {
                                         showFloatingText(currentMoles[0], "🛶 龍舟翻船啦！", '#ff0055');
@@ -550,7 +518,6 @@
             });
         }
 
-        // 🛶 1人玩專屬獨立專注懲罰機制
         function handleDamage(floatingMessage) {
             if (!isGameRunning || playerCount > 1) return; 
             
@@ -632,15 +599,12 @@
             activeRetractTimers.forEach(t => clearTimeout(t));
             activeRetractTimers = [];
 
-            // 💡 漏掉肉粽：
             if (missedGoodMole) {
                 if (playerCount === 1) {
-                    // 1人玩模式下才會執行扣血與大字減速懲罰
                     handleDamage("🛶 龍舟減速！");
                     if (lives <= 0) return; 
                 } else {
-                    // 多人模式下漏點肉粽：依照最新指令，不扣生命值，完全不彈出減速字體、不震動
-                    playSound('bomb'); // 僅給予一個輕微淡出的音效提示
+                    playSound('bomb'); 
                 }
             }
 
@@ -705,7 +669,6 @@
             document.getElementById('start-overlay').classList.add('hide');
             document.getElementById('result-overlay').classList.add('hide');
             
-            // 初始化數據
             score = 0;
             speedLevel = 1;
             lives = 3; 
