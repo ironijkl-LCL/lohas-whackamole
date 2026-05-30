@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>端午奪粽大作戰 - 系統純淨登入版</title>
+    <title>端午奪粽大作戰 - 跨裝置完美支援版</title>
     <style>
         /* ==========================================================================
            1. 基礎樣式與全裝置適應佈局
@@ -27,11 +27,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: env(safe-area-inset-top, 10px) 4vw env(safe-area-inset-bottom, 10px) 4vw; 
+            padding: env(safe-area-inset-top, 20px) 4vw env(safe-area-inset-bottom, 20px) 4vw; 
         }
 
         /* ==========================================================================
-           🔑 專為長者優化：純淨系統雙鍵盤登入版面
+           🔑 純淨系統雙鍵盤登入版面
            ========================================================================== */
         .login-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -45,7 +45,6 @@
         .input-display-container {
             width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;
         }
-        /* 加大版輸入框外包圍列 */
         .input-row {
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.06); border: 3px solid rgba(255,255,255,0.15);
@@ -55,16 +54,14 @@
         .input-row:focus-within { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0,255,204,0.4); background: rgba(255,255,255,0.09); }
         .input-label { font-size: 22px; font-weight: bold; color: #cbd5e1; white-space: nowrap; }
         
-        /* 原生大字體輸入框，允許長者直接點擊使用實體或系統自帶輸入法 */
         .native-input {
             width: 100%; background: none; border: none; outline: none;
             font-size: 28px; font-weight: bold; color: #39ff14; text-align: right;
             font-family: inherit; letter-spacing: 1px; padding-left: 15px;
-            user-select: text !important; -webkit-user-select: text !important; /* 解鎖系統選字支援 */
+            user-select: text !important; -webkit-user-select: text !important;
         }
         .native-input::placeholder { color: rgba(255,255,255,0.25); font-size: 22px; letter-spacing: 0px; }
 
-        /* 專屬大寬度確認登入按鈕 */
         .login-btn-container { width: 100%; max-width: 480px; }
         .btn-login-submit {
             width: 100%; font-size: 28px; font-weight: bold; color: #071e22; 
@@ -73,7 +70,6 @@
             box-shadow: 0 6px 20px rgba(251, 133, 0, 0.4);
         }
         .btn-login-submit:active { transform: scale(0.97); }
-
         .login-error-text { font-size: 18px; color: #ff0055; font-weight: bold; min-height: 25px; margin-top: 20px; text-align: center; }
 
         /* ==========================================================================
@@ -103,10 +99,10 @@
            ========================================================================== */
         .game-stage { 
             flex-grow: 1; 
-            width: 88vw; 
-            height: 88vw; 
-            max-width: min(65vh, 650px); 
-            max-height: min(65vh, 650px); 
+            width: 90vw; 
+            height: 90vw; 
+            max-width: min(70vh, 700px); 
+            max-height: min(70vh, 700px); 
             display: grid; 
             gap: 6px; 
             padding: 5px; 
@@ -156,15 +152,6 @@
         .flash-upgrade { animation: flashUpgrade 0.5s ease-out 2; }
         @keyframes flashDamage { 0% { background: rgba(255, 0, 85, 0.4); } 100% { background: #071e22; } }
         .flash-damage { animation: flashDamage 0.4s ease-out 1; }
-
-        /* ==========================================================================
-           4. 底部引導欄
-           ========================================================================== */
-        .footer-bar { width: 100%; max-width: 850px; text-align: center; padding: 5px 10px 15px 10px; }
-        .tip-text { font-size: 16px; color: #f8fafc; background: rgba(255, 255, 255, 0.08); padding: 8px 24px; border-radius: 40px; display: inline-block; border: 1px solid rgba(82, 183, 136, 0.4); }
-        @media (min-width: 768px) { .tip-text { font-size: 22px; padding: 12px 36px; border-width: 2px; } }
-        .tip-text span { color: #39ff14; font-weight: bold; }
-        .tip-text em { color: #ff4500; font-weight: bold; font-style: normal; }
 
         /* ==========================================================================
            5. 滿版大畫面覆蓋層
@@ -233,10 +220,6 @@
 
     <div class="game-stage grid-25" id="game-stage"></div>
 
-    <div class="footer-bar">
-        <div class="tip-text">看到 <span>🎋端午肉粽公仔</span> 快點擊！看到 <em>💣生氣大炸彈</em> 不要點喔！</div>
-    </div>
-
     <div id="start-overlay" class="overlay hide">
         <h1>端午奪粽大作戰</h1>
         <p>每隊共享 3 隻龍舟機會，生命值扣完即提早結算！請設定遊戲參數：</p>
@@ -285,11 +268,9 @@
         const passInputEl = document.getElementById('display-password');
         const loginSubmitBtn = document.getElementById('login-submit-btn');
 
-        // 音效回饋綁定
         nameInputEl.addEventListener('focus', () => playSound('success'));
         passInputEl.addEventListener('focus', () => playSound('success'));
 
-        // 綁定點擊確認登入按鈕的事件 (PointerDown 零延遲技術)
         loginSubmitBtn.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             document.getElementById('login-error').innerText = ""; 
@@ -304,7 +285,6 @@
             if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
             if (audioCtx.state === 'suspended') audioCtx.resume();
             
-            // 收起系統鍵盤
             nameInputEl.blur();
             passInputEl.blur();
 
