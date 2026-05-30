@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>端午奪粽大作戰 - 多人合作限時命值版</title>
+    <title>端午奪粽大作戰 - 全模式生命限時版</title>
     <style>
         /* ==========================================================================
            1. 基礎樣式與全螢幕佈局
@@ -73,11 +73,6 @@
             align-items: center;
             height: 42px;
             text-shadow: 0 0 10px rgba(0,255,204,0.4);
-        }
-        .boats-container.infinite {
-            font-size: 22px;
-            color: #00ffcc;
-            font-weight: bold;
         }
 
         /* ==========================================================================
@@ -289,6 +284,7 @@
 </head>
 <body>
 
+    <!-- 頂部資訊看板 -->
     <div class="header-bar">
         <div class="stat-box">
             <div class="stat-label">遊戲模式</div>
@@ -300,7 +296,7 @@
         </div>
         <div class="stat-box">
             <div class="stat-label">龍舟生命值</div>
-            <div class="boats-container" id="hearts-display">🛶🛶🛶</div>
+            <div class="boats-container" id="hearts-display"></div>
         </div>
         <div class="stat-box" id="score-box">
             <div class="stat-label">團隊總得分</div>
@@ -308,16 +304,20 @@
         </div>
     </div>
 
+    <!-- 核心主舞台 (自動依據人數切換 25格 或 36格) -->
     <div class="game-stage grid-25" id="game-stage"></div>
 
+    <!-- 底部說明 -->
     <div class="footer-bar">
         <div class="tip-text">看到 <span>🎋端午肉粽公仔</span> 快點擊！看到 <em>💣生氣大炸彈</em> 不要點喔！</div>
     </div>
 
+    <!-- 開始畫面 -->
     <div id="start-overlay" class="overlay">
         <h1>端午奪粽大作戰</h1>
-        <p>歡迎大家參與！1 人玩模式每次只有 3 隻龍舟機會，按錯炸彈或漏掉肉粽會翻船！<br>多人合作模式不設生命限制，4 人合作模式會開啟 36 格大戰場，請設定遊戲參數：</p>
+        <p>全模式限時生命挑戰！每隊共享 3 隻龍舟機會，生命值扣完即提早結算！<br>多人模式下，按錯炸彈會讓龍舟翻船扣血。4 人合作模式會自動開啟 36 格大戰場，請設定遊戲參數：</p>
         
+        <!-- 人數選擇 -->
         <div class="selector-title">選擇參與人數</div>
         <div class="time-options" style="margin-bottom: 25px;">
             <button class="opt-btn active" id="p1-btn" onclick="selectPlayers(1, this)">🙋 1 人玩</button>
@@ -325,6 +325,7 @@
             <button class="opt-btn" id="p4-btn" onclick="selectPlayers(4, this)">🔥 4 人合作模式</button>
         </div>
 
+        <!-- 時間選擇 -->
         <div class="selector-title">設定一局的時間</div>
         <div class="time-options" style="margin-bottom: 40px;">
             <button class="opt-btn" onclick="selectTime(30, this)">30 秒體驗</button>
@@ -335,6 +336,7 @@
         <button class="btn-start" onclick="startGame()">開啟音樂衝刺龍舟</button>
     </div>
 
+    <!-- 結算畫面 -->
     <div id="result-overlay" class="overlay hide">
         <h1 id="result-title">團隊活化大成功</h1>
         <p id="result-desc">配合著輕快熱鬧的背景音樂，大家的默契與反應力表現得非常精彩！</p>
@@ -429,17 +431,18 @@
         /* ==========================================================================
            ⏱ 核心遊戲與計時命值業務算法
            ========================================================================== */
+        let moles; 
         let score = 0;
         let speedLevel = 1;
         let lives = 3; 
         let mainGameLoop = null;
-        let countdownTimer = null; // 計時器核心
+        let countdownTimer = null; 
         let activeRetractTimers = []; 
         let isGameRunning = false;
         
         let playerCount = 1; 
         let totalGridCount = 25; 
-        let selectedDuration = 60; // 預設時間
+        let selectedDuration = 60; 
         let timeRemaining = 60;
 
         let moleUpDuration = 1400;  
@@ -497,7 +500,7 @@
         }
 
         function bindMoleEvents() {
-            const moles = document.querySelectorAll('.mole');
+            moles = document.querySelectorAll('.mole');
             moles.forEach(mole => {
                 const handleHit = (e) => {
                     e.preventDefault();
@@ -520,11 +523,22 @@
                             }
 
                         } else if (mole.classList.contains('bomb')) {
+                            // 💡 按錯炸彈：1人玩模式觸發獨立專注懲罰；多人模式一樣扣除生命值並跳出翻船字體，但多人模式不執行強震動與紅光閃爍
                             if (playerCount === 1) {
                                 handleDamage("🛶 龍舟翻船啦！");
                             } else {
+                                lives--;
+                                updateBoatsDisplay();
                                 playSound('bomb');
-                                triggerHaptic('success'); 
+                                if (lives <= 0) {
+                                    endGame(true);
+                                } else {
+                                    // 多人合作按錯炸彈一樣彈出「龍舟翻船啦！」大字提示團隊
+                                    const currentMoles = document.querySelectorAll('.mole.up');
+                                    if (currentMoles.length > 0) {
+                                        showFloatingText(currentMoles[0], "🛶 龍舟翻船啦！", '#ff0055');
+                                    }
+                                }
                             }
                             showFloatingText(mole, '炸彈！💥', '#ff4500');
                         }
@@ -536,6 +550,7 @@
             });
         }
 
+        // 🛶 1人玩專屬獨立專注懲罰機制
         function handleDamage(floatingMessage) {
             if (!isGameRunning || playerCount > 1) return; 
             
@@ -546,10 +561,7 @@
             document.body.classList.add('flash-damage');
             setTimeout(() => document.body.classList.remove('flash-damage'), 400);
 
-            let boatStr = "";
-            for (let i = 0; i < lives; i++) boatStr += "🛶";
-            for (let i = 0; i < (3 - lives); i++) boatStr += "💥";
-            document.getElementById('hearts-display').innerText = boatStr;
+            updateBoatsDisplay();
 
             const currentMoles = document.querySelectorAll('.mole.up');
             if (currentMoles.length > 0) {
@@ -559,6 +571,13 @@
             if (lives <= 0) {
                 endGame(true); 
             }
+        }
+
+        function updateBoatsDisplay() {
+            let boatStr = "";
+            for (let i = 0; i < lives; i++) boatStr += "🛶";
+            for (let i = 0; i < (3 - lives); i++) boatStr += "💥";
+            document.getElementById('hearts-display').innerText = boatStr;
         }
 
         function adjustDifficultyDynamic() {
@@ -608,14 +627,21 @@
                 }
             });
 
-            const allMoles = document.querySelectorAll('.mole');
-            allMoles.forEach(m => { if (!m.classList.contains('hit')) m.className = 'mole'; });
+            moles = document.querySelectorAll('.mole');
+            moles.forEach(m => { if (!m.classList.contains('hit')) m.className = 'mole'; });
             activeRetractTimers.forEach(t => clearTimeout(t));
             activeRetractTimers = [];
 
-            if (missedGoodMole && playerCount === 1) {
-                handleDamage("🛶 龍舟減速！");
-                if (lives <= 0) return; 
+            // 💡 漏掉肉粽：
+            if (missedGoodMole) {
+                if (playerCount === 1) {
+                    // 1人玩模式下才會執行扣血與大字減速懲罰
+                    handleDamage("🛶 龍舟減速！");
+                    if (lives <= 0) return; 
+                } else {
+                    // 多人模式下漏點肉粽：依照最新指令，不扣生命值，完全不彈出減速字體、不震動
+                    playSound('bomb'); // 僅給予一個輕微淡出的音效提示
+                }
             }
 
             let currentSpawnCount = 1;
@@ -663,13 +689,12 @@
             }
         }
 
-        // 倒數計時核心功能
         function startCountdown() {
             countdownTimer = setInterval(() => {
                 timeRemaining--;
                 document.getElementById('time-display').innerText = timeRemaining + " 秒";
                 if (timeRemaining <= 0) {
-                    endGame(false); // 時間完結，完美正常結束
+                    endGame(false); 
                 }
             }, 1000);
         }
@@ -684,19 +709,10 @@
             score = 0;
             speedLevel = 1;
             lives = 3; 
-            timeRemaining = selectedDuration; // 套用選擇的時間
+            timeRemaining = selectedDuration; 
             isGameRunning = true;
             
-            // 依據人數模式切換頂部生命值看板顯示
-            const heartsDisplay = document.getElementById('hearts-display');
-            if (playerCount === 1) {
-                heartsDisplay.className = "boats-container";
-                heartsDisplay.innerText = "🛶🛶🛶";
-            } else {
-                heartsDisplay.className = "boats-container infinite";
-                heartsDisplay.innerText = "♾️ 無限歡樂";
-            }
-            
+            updateBoatsDisplay();
             document.getElementById('score').innerText = score;
             document.getElementById('time-display').innerText = timeRemaining + " 秒";
 
@@ -705,14 +721,14 @@
             }
             
             adjustDifficultyDynamic();
-            startCountdown(); // 啟動倒數計時
+            startCountdown(); 
             startBGM(); 
         }
 
         function endGame(isGameOverByLives = false) {
             isGameRunning = false;
             clearInterval(mainGameLoop);
-            clearInterval(countdownTimer); // 關閉計時器
+            clearInterval(countdownTimer); 
             activeRetractTimers.forEach(t => clearTimeout(t));
             stopBGM(); 
             
@@ -726,10 +742,14 @@
             if (playerCount === 4) modeName = "4 人合作模式 (36格)";
             document.getElementById('final-mode').innerText = modeName;
             
-            if (isGameOverByLives && playerCount === 1) {
+            if (isGameOverByLives) {
                 document.getElementById('result-title').innerText = "龍舟能量耗盡";
                 document.getElementById('result-title').style.color = "#ff0055";
-                document.getElementById('result-desc').innerText = "哎呀，分心划龍舟導致龍舟翻船沒力氣了！不過沒關係，調整好狀態，重新衝刺一次！";
+                if (playerCount === 1) {
+                    document.getElementById('result-desc').innerText = "哎呀，分心划龍舟導致龍舟翻船沒力氣了！不過沒關係，調整好狀態，重新衝刺一次！";
+                } else {
+                    document.getElementById('result-desc').innerText = "哎呀，大夥兒在密集的賽道中按到太多生氣炸彈啦！換個手，重整旗鼓再來挑戰！";
+                }
             } else {
                 document.getElementById('result-title').innerText = "團隊活化大成功";
                 document.getElementById('result-title').style.color = "#52b788";
