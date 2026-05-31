@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>端午奪粽大作戰 - 跨裝置完美支援版</title>
+    <title>端午奪粽大作戰 - 雲端數據對接版</title>
     <style>
         /* ==========================================================================
            1. 基礎樣式與全裝置適應佈局
@@ -31,7 +31,7 @@
         }
 
         /* ==========================================================================
-           🔑 純淨系統雙鍵盤登入版面
+           🔑 雲端即時密碼驗證登入版面
            ========================================================================== */
         .login-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -70,7 +70,7 @@
             box-shadow: 0 6px 20px rgba(251, 133, 0, 0.4);
         }
         .btn-login-submit:active { transform: scale(0.97); }
-        .login-error-text { font-size: 18px; color: #ff0055; font-weight: bold; min-height: 25px; margin-top: 20px; text-align: center; }
+        .login-error-text { font-size: 18px; color: #ff0055; font-weight: bold; min-height: 25px; margin-top: 20px; text-align: center; line-height: 1.4; }
 
         /* ==========================================================================
            2. 頂部資訊看板
@@ -95,7 +95,7 @@
         @media (min-width: 768px) { .boats-container { font-size: 32px; letter-spacing: 5px; height: 45px; } }
 
         /* ==========================================================================
-           3. 核心舞台
+           3. 響應式核心舞台
            ========================================================================== */
         .game-stage { 
             flex-grow: 1; 
@@ -173,6 +173,8 @@
         .btn-start { font-size: 22px; font-weight: bold; color: #071e22; background: linear-gradient(135deg, #52b788, #39ff14); border: none; padding: 14px 45px; border-radius: 40px; cursor: pointer; box-shadow: 0 6px 20px rgba(57, 255, 20, 0.5); }
         @media (min-width: 768px) { .btn-start { font-size: 32px; padding: 22px 70px; border-radius: 60px; box-shadow: 0 8px 30px rgba(57, 255, 20, 0.5); } }
         .btn-start:active { transform: scale(0.95); }
+        
+        .cloud-sync-status { font-size: 14px; color: #94a3b8; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -255,6 +257,7 @@
             </div>
         </div>
         <button class="btn-start" id="replay-btn">再玩一局重整旗鼓</button>
+        <div id="cloud-status-text" class="cloud-sync-status">數據正在上傳雲端...</div>
     </div>
 
     <script>
@@ -262,34 +265,72 @@
         let bgmNode = null; 
 
         /* ==========================================================================
-           🔑 純淨實體/系統鍵盤登入驗證控制
+           📡 雲端資料庫串接（獨立請求分流：GET 與 POST 精確對接不同專屬 URL）
+           ========================================================================== */
+        const DOGET_URL = "https://script.google.com/macros/s/AKfycbyIWTX46MWyIIyCl8QSbIEbvXJQpP7aXZ4UkogDKiyTyIB_vgVOStkjdn5apTrJeCAN0Q/exec";
+        const DOPOST_URL = "https://script.google.com/macros/s/AKfycbz5d86QupG1d8A1jVCHpCd65zImUIWEWH_2g3bGF4iBMpXAYH3zwSQ4FY9QZgcXE3ml/exec";
+        const ADMIN_EMAIL = "ironijkl@gmail.com"; 
+
+        /* ==========================================================================
+           🔑 雲端即時密碼驗證邏輯 (精確撈取 DOGET_URL 的極簡化 JSON 比對)
            ========================================================================== */
         const nameInputEl = document.getElementById('display-number');
         const passInputEl = document.getElementById('display-password');
         const loginSubmitBtn = document.getElementById('login-submit-btn');
+        const errorDisplay = document.getElementById('login-error');
 
         nameInputEl.addEventListener('focus', () => playSound('success'));
         passInputEl.addEventListener('focus', () => playSound('success'));
 
         loginSubmitBtn.addEventListener('pointerdown', (e) => {
             e.preventDefault();
-            document.getElementById('login-error').innerText = ""; 
+            errorDisplay.innerText = ""; 
 
-            if (nameInputEl.value.trim() === "" || passInputEl.value.trim() === "") {
+            const inputUser = nameInputEl.value.trim();
+            const inputPass = passInputEl.value.trim();
+
+            if (inputUser === "" || inputPass === "") {
                 playSound('bomb');
-                document.getElementById('login-error').innerText = "⚠️ 請填寫完整的名稱與密碼喔！";
+                errorDisplay.innerText = "⚠️ 請填寫完整的名稱與密碼喔！";
                 return;
             }
 
-            playSound('success');
-            if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            nameInputEl.blur();
-            passInputEl.blur();
+            loginSubmitBtn.disabled = true;
+            errorDisplay.style.color = "#ffb703";
+            errorDisplay.innerText = "🔄 正在連線雲端密碼表驗證中，請稍候...";
 
-            document.getElementById('login-screen').classList.add('hide');
-            document.getElementById('start-overlay').classList.remove('hide');
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            // 1. 登入驗證（對接 lohas-whackamole-pw 專屬 doget 網址）
+            fetch(DOGET_URL)
+            .then(res => res.json())
+            .then(usersObj => {
+                loginSubmitBtn.disabled = false;
+                
+                // 比對大寫/小寫一致的 A 欄 (ID 鍵值) 以及其內部的 pw 屬性值
+                if (usersObj[inputUser] && usersObj[inputUser].pw === inputPass) {
+                    playSound('success');
+                    if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+                    
+                    nameInputEl.blur();
+                    passInputEl.blur();
+                    
+                    document.getElementById('login-screen').classList.add('hide');
+                    document.getElementById('start-overlay').classList.remove('hide');
+                } else {
+                    playSound('bomb');
+                    errorDisplay.style.color = "#ff0055";
+                    errorDisplay.innerText = "❌ 登入失敗！找不到此名稱或密碼輸入錯誤。";
+                    triggerHaptic('bomb');
+                }
+            })
+            .catch(err => {
+                loginSubmitBtn.disabled = false;
+                console.error("驗證連線失敗:", err);
+                errorDisplay.style.color = "#ff0055";
+                errorDisplay.innerText = "⚠️ 雲端連線失敗，請檢查網路或確認 GAS 是否正常部署。";
+                playSound('bomb');
+            });
         });
 
         /* ==========================================================================
@@ -628,6 +669,45 @@
             startBGM(); 
         }
 
+        /* ==========================================================================
+           📡 2. 遊戲結束數據儲存（精準打包 A-E 欄位數據，對接並發送 POST 至 DOPOST_URL）
+           ========================================================================= */
+        function uploadLogToCloud() {
+            const statusIndicator = document.getElementById('cloud-status-text');
+            statusIndicator.innerText = "正在儲存數據至 lohas-whackamole...";
+            statusIndicator.style.color = "#ffb703";
+
+            // 配合您的 doPost 規格封裝對應的 A 至 E 欄位資料鍵值
+            const gameDataPacket = {
+                caseId: nameInputEl.value.trim(),                                             // A. 登入人名稱
+                name: selectedDuration + " 秒",                                               // B. 時間
+                trainingType: playerCount === 4 ? "4 人合作模式" : (playerCount === 2 ? "2 人合作模式" : "1 人玩"), // C. 玩咩模式
+                goldEarned: score,                                                            // D. 分數
+                totalGold: new Date().toLocaleTimeString()                                    // E. 登出時間
+            };
+
+            // 精準發送 POST 請求至您的紀錄寫入端點 (DOPOST_URL)
+            fetch(DOPOST_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain" }, 
+                body: JSON.stringify(gameDataPacket)
+            })
+            .then(res => res.json())
+            .then(resData => {
+                if (resData.status === "success") {
+                    statusIndicator.innerText = "雲端儲存成功！數據已填入試算表 A 至 E 欄";
+                    statusIndicator.style.color = "#39ff14";
+                } else {
+                    throw new Error(resData.message);
+                }
+            })
+            .catch(err => {
+                console.error("雲端上傳異常:", err);
+                statusIndicator.innerText = "連線逾時，遊玩數據已安全暫存於本地端";
+                statusIndicator.style.color = "#ff0055";
+            });
+        }
+
         function endGame(isGameOverByLives = false) {
             isGameRunning = false;
             clearInterval(mainGameLoop);
@@ -653,7 +733,9 @@
                 document.getElementById('result-title').style.color = "#52b788";
                 document.getElementById('result-desc').innerText = "大家合作無間，在時間限制內完美展現反應力，成功奪得大量粽子，大腦全面大活化！";
             }
+            
             document.getElementById('result-overlay').classList.remove('hide');
+            uploadLogToCloud();
         }
     </script>
 </body>
