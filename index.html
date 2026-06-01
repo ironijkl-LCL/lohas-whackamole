@@ -16,89 +16,118 @@
             padding: 0;
         }
         body {
-            background-color: #071e22; 
+            background-color: #071e22;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif;
             color: #ffffff;
             overflow: hidden;
-            touch-action: none; /* 全面停用瀏覽器預設手勢，防止畫面亂跑或縮放 */
+            touch-action: none;
+            /* 全面停用瀏覽器預設手勢，防止畫面亂跑或縮放 */
             height: 100vh;
             width: 100vw;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: env(safe-area-inset-top, 20px) 4vw env(safe-area-inset-bottom, 20px) 4vw; 
+            padding: env(safe-area-inset-top, 20px) 4vw env(safe-area-inset-bottom, 20px) 4vw;
         }
 
         /* ==========================================================================
            🔑 雲端即時密碼驗證登入版面
            ========================================================================== */
         .login-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #071e22; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 200; padding: 20px;
+            align-items: center; justify-content: center; z-index: 200;
+            padding: 20px;
         }
-        .login-screen.hide { display: none; }
-        .login-title { font-size: 8vmin; max-size: 52px; color: #52b788; margin-bottom: 5px; text-shadow: 0 0 15px rgba(82,183,136,0.4); text-align: center; }
-        .login-subtitle { font-size: 3.5vmin; max-size: 22px; color: #94a3b8; margin-bottom: 35px; text-align: center; }
+        .login-screen.hide { display: none;
+        }
+        .login-title { font-size: 8vmin; max-size: 52px; color: #52b788; margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(82,183,136,0.4); text-align: center; }
+        .login-subtitle { font-size: 3.5vmin;
+            max-size: 22px; color: #94a3b8; margin-bottom: 35px; text-align: center; }
         
         .input-display-container {
-            width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;
+            width: 100%;
+            max-width: 480px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 40px;
         }
         .input-row {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.06); border: 3px solid rgba(255,255,255,0.15);
             border-radius: 18px; padding: 16px 24px; width: 100%;
             transition: all 0.2s;
         }
-        .input-row:focus-within { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0,255,204,0.4); background: rgba(255,255,255,0.09); }
-        .input-label { font-size: 22px; font-weight: bold; color: #cbd5e1; white-space: nowrap; }
+        .input-row:focus-within { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0,255,204,0.4); background: rgba(255,255,255,0.09);
+        }
+        .input-label { font-size: 22px; font-weight: bold; color: #cbd5e1; white-space: nowrap;
+        }
         
         .native-input {
-            width: 100%; background: none; border: none; outline: none;
+            width: 100%;
+            background: none; border: none; outline: none;
             font-size: 28px; font-weight: bold; color: #39ff14; text-align: right;
             font-family: inherit; letter-spacing: 1px; padding-left: 15px;
             user-select: text !important; -webkit-user-select: text !important;
         }
-        .native-input::placeholder { color: rgba(255,255,255,0.25); font-size: 22px; letter-spacing: 0px; }
+        .native-input::placeholder { color: rgba(255,255,255,0.25); font-size: 22px;
+            letter-spacing: 0px; }
 
-        .login-btn-container { width: 100%; max-width: 480px; }
+        .login-btn-container { width: 100%; max-width: 480px;
+        }
         .btn-login-submit {
-            width: 100%; font-size: 28px; font-weight: bold; color: #071e22; 
+            width: 100%;
+            font-size: 28px; font-weight: bold; color: #071e22; 
             background: linear-gradient(135deg, #ffb703, #fb8500); border: none; 
             padding: 18px 0; border-radius: 50px; cursor: pointer;
             box-shadow: 0 6px 20px rgba(251, 133, 0, 0.4);
         }
-        .btn-login-submit:active { transform: scale(0.97); }
-        .login-error-text { font-size: 18px; color: #ff0055; font-weight: bold; min-height: 25px; margin-top: 20px; text-align: center; line-height: 1.4; }
+        .btn-login-submit:active { transform: scale(0.97);
+        }
+        .login-error-text { font-size: 18px; color: #ff0055; font-weight: bold; min-height: 25px; margin-top: 20px;
+            text-align: center; line-height: 1.4; }
 
         /* ==========================================================================
            2. 頂部資訊看板
            ========================================================================== */
         .header-bar {
-            width: 100%; max-width: 950px; display: flex; justify-content: space-between; align-items: center; padding: 5px; z-index: 10; gap: 8px;
+            width: 100%;
+            max-width: 950px; display: flex; justify-content: space-between; align-items: center; padding: 5px; z-index: 10; gap: 8px;
         }
         .stat-box {
-            background: rgba(255, 255, 255, 0.06); padding: 6px 15px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: center; flex: 1; min-width: 70px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 15px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: center; flex: 1; min-width: 70px;
         }
-        .stat-label { font-size: 12px; color: #cbd5e1; margin-bottom: 2px; font-weight: bold; white-space: nowrap; }
-        .stat-value { font-size: 24px; font-weight: bold; }
+        .stat-label { font-size: 12px; color: #cbd5e1; margin-bottom: 2px; font-weight: bold; white-space: nowrap;
+        }
+        .stat-value { font-size: 24px; font-weight: bold;
+        }
         @media (min-width: 768px) { 
-            .stat-box { padding: 10px 25px; border-radius: 18px; border-width: 2px; }
-            .stat-label { font-size: 16px; }
-            .stat-value { font-size: 38px; }
+            .stat-box { padding: 10px 25px;
+                border-radius: 18px; border-width: 2px; }
+            .stat-label { font-size: 16px;
+                }
+            .stat-value { font-size: 38px;
+                }
         }
-        .score-value { color: #39ff14; text-shadow: 0 0 10px rgba(57,255,20,0.5); }
-        .time-value { color: #ffb703; text-shadow: 0 0 10px rgba(255,183,3,0.5); }
-        .player-value { color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.5); }
-        .boats-container { font-size: 22px; letter-spacing: 2px; display: flex; justify-content: center; align-items: center; height: 35px; text-shadow: 0 0 10px rgba(0,255,204,0.4); }
-        @media (min-width: 768px) { .boats-container { font-size: 32px; letter-spacing: 5px; height: 45px; } }
+        .score-value { color: #39ff14;
+            text-shadow: 0 0 10px rgba(57,255,20,0.5); }
+        .time-value { color: #ffb703;
+            text-shadow: 0 0 10px rgba(255,183,3,0.5); }
+        .player-value { color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0,255,204,0.5); }
+        .boats-container { font-size: 22px; letter-spacing: 2px;
+            display: flex; justify-content: center; align-items: center; height: 35px; text-shadow: 0 0 10px rgba(0,255,204,0.4);
+        }
+        @media (min-width: 768px) { .boats-container { font-size: 32px; letter-spacing: 5px; height: 45px;
+        } }
 
         /* ==========================================================================
            3. 響應式核心舞台
            ========================================================================== */
         .game-stage { 
-            flex-grow: 1; 
+            flex-grow: 1;
             width: 90vw; 
             height: 90vw; 
             max-width: min(70vh, 700px); 
@@ -106,75 +135,152 @@
             display: grid; 
             gap: 6px; 
             padding: 5px; 
-            margin: auto 0; 
+            margin: auto 0;
         }
-        @media (min-width: 768px) { .game-stage { gap: 10px; } }
-        .game-stage.grid-25 { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); }
-        .game-stage.grid-36 { grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); }
+        @media (min-width: 768px) { .game-stage { gap: 10px;
+        } }
+        .game-stage.grid-25 { grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr);
+        }
+        .game-stage.grid-36 { grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr);
+        }
         
-        .hole { position: relative; background: #14362a; border-radius: 50%; border: 3px solid #2d6a4f; box-shadow: inset 0 4px 8px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.4); overflow: hidden; aspect-ratio: 1 / 1; }
-        @media (min-width: 768px) { .hole { border-width: 5px; box-shadow: inset 0 6px 12px rgba(0,0,0,0.8), 0 3px 8px rgba(0,0,0,0.4); } }
-        .mole { position: absolute; bottom: -100%; left: 2%; width: 96%; height: 96%; transition: bottom 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .mole.up { bottom: 2%; }
+        .hole { position: relative;
+            background: #14362a; border-radius: 50%; border: 3px solid #2d6a4f; box-shadow: inset 0 4px 8px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.4); overflow: hidden;
+            aspect-ratio: 1 / 1; }
+        @media (min-width: 768px) { .hole { border-width: 5px;
+            box-shadow: inset 0 6px 12px rgba(0,0,0,0.8), 0 3px 8px rgba(0,0,0,0.4);
+        } }
+        .mole { position: absolute; bottom: -100%; left: 2%; width: 96%;
+            height: 96%; transition: bottom 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .mole.up { bottom: 2%;
+        }
 
         /* 🎋 角色 A：端午節肉粽公仔 */
-        .zongzi-doll { display: none; width: 95%; height: 95%; position: relative; background: linear-gradient(135deg, #52b788, #2d6a4f); clip-path: polygon(50% 0%, 100% 85%, 85% 100%, 15% 100%, 0% 85%); border: 1.5px solid #ffffff; box-shadow: 0 0 15px rgba(82, 183, 136, 0.6); }
-        @media (min-width: 768px) { .zongzi-doll { border-width: 2.5px; } }
-        .mole.good .zongzi-doll { display: block; }
-        .zongzi-doll .rope { position: absolute; top: 56%; left: 0; width: 100%; height: 4px; background-color: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-        .zongzi-doll .rope-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background-color: #ffb703; border-radius: 50%; }
-        .zongzi-doll .eye { position: absolute; top: 35%; width: 22%; height: 30%; background-color: #071e22; border-radius: 50%; }
-        .zongzi-doll .eye.left { left: 26%; } .zongzi-doll .eye.right { right: 26%; }
-        .zongzi-doll .eye::after { content: ''; position: absolute; top: 15%; left: 15%; width: 35%; height: 35%; background-color: #fff; border-radius: 50%; }
-        .zongzi-doll .blush { position: absolute; top: 46%; width: 20%; height: 12%; background-color: #ff007f; border-radius: 50%; opacity: 0.6; }
-        .zongzi-doll .blush.left { left: 12%; } .zongzi-doll .blush.right { right: 12%; }
-        .zongzi-doll .mouth { position: absolute; top: 48%; left: 50%; transform: translateX(-50%); width: 30%; height: 18%; background-color: #ff4d6d; border-radius: 0 0 15px 15px; border: 1px solid #071e22; }
-        .zongzi-doll .horn { position: absolute; top: 1px; width: 15%; height: 22%; background-color: #ffb703; border-radius: 50% 50% 0 0; }
-        .zongzi-doll .horn.left { left: 18%; transform: rotate(-25deg); } .zongzi-doll .horn.right { right: 18%; transform: rotate(25deg); }
+        .zongzi-doll { display: none;
+            width: 95%; height: 95%; position: relative; background: linear-gradient(135deg, #52b788, #2d6a4f);
+            clip-path: polygon(50% 0%, 100% 85%, 85% 100%, 15% 100%, 0% 85%); border: 1.5px solid #ffffff;
+            box-shadow: 0 0 15px rgba(82, 183, 136, 0.6); }
+        @media (min-width: 768px) { .zongzi-doll { border-width: 2.5px;
+        } }
+        .mole.good .zongzi-doll { display: block;
+        }
+        .zongzi-doll .rope { position: absolute; top: 56%; left: 0; width: 100%;
+            height: 4px; background-color: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .zongzi-doll .rope-badge { position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background-color: #ffb703; border-radius: 50%;
+        }
+        .zongzi-doll .eye { position: absolute; top: 35%; width: 22%; height: 30%;
+            background-color: #071e22; border-radius: 50%; }
+        .zongzi-doll .eye.left { left: 26%;
+        } .zongzi-doll .eye.right { right: 26%; }
+        .zongzi-doll .eye::after { content: '';
+            position: absolute; top: 15%; left: 15%; width: 35%; height: 35%; background-color: #fff; border-radius: 50%;
+        }
+        .zongzi-doll .blush { position: absolute; top: 46%; width: 20%; height: 12%;
+            background-color: #ff007f; border-radius: 50%; opacity: 0.6; }
+        .zongzi-doll .blush.left { left: 12%;
+        } .zongzi-doll .blush.right { right: 12%; }
+        .zongzi-doll .mouth { position: absolute;
+            top: 48%; left: 50%; transform: translateX(-50%); width: 30%; height: 18%; background-color: #ff4d6d; border-radius: 0 0 15px 15px;
+            border: 1px solid #071e22; }
+        .zongzi-doll .horn { position: absolute; top: 1px;
+            width: 15%; height: 22%; background-color: #ffb703; border-radius: 50% 50% 0 0;
+        }
+        .zongzi-doll .horn.left { left: 18%; transform: rotate(-25deg);
+        } .zongzi-doll .horn.right { right: 18%; transform: rotate(25deg); }
 
         /* 💣 角色 B：霓虹復古大炸彈 */
-        .bomb-doll { display: none; width: 90%; height: 90%; background: linear-gradient(135deg, #ff4500, #ff007f); border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 0 20px rgba(255, 69, 0, 0.8); position: relative; }
-        .mole.bomb .bomb-doll { display: block; }
-        .bomb-doll .fuse-top { position: absolute; top: -10%; left: 50%; transform: translateX(-50%); width: 26%; height: 14%; background-color: #333; border: 1px solid #fff; border-radius: 2px; }
-        .bomb-doll .fuse-cord { position: absolute; top: -28%; left: 55%; width: 6%; height: 22%; background-color: #ffb703; transform: rotate(15deg); box-shadow: 0 0 5px #ffb703; }
-        .bomb-doll .cross-eye { position: absolute; top: 32%; width: 24%; height: 24%; }
-        .bomb-doll .cross-eye.left { left: 18%; } .bomb-doll .cross-eye.right { right: 18%; }
-        .bomb-doll .cross-eye::before, .bomb-doll .cross-eye::after { content: ''; position: absolute; top: 40%; left: 0; width: 100%; height: 16%; background-color: #ffffff; border-radius: 1.5px; }
-        .bomb-doll .cross-eye::before { transform: rotate(45deg); } .bomb-doll .cross-eye::after { transform: rotate(-45deg); }
-        .bomb-doll .brow { position: absolute; top: 18%; width: 26%; height: 8%; background-color: #000000; border-radius: 1.5px; }
-        .bomb-doll .brow.left { left: 14%; transform: rotate(20deg); } .bomb-doll .brow.right { right: 14%; transform: rotate(-20deg); }
+        .bomb-doll { display: none;
+            width: 90%; height: 90%; background: linear-gradient(135deg, #ff4500, #ff007f); border-radius: 50%; border: 2px solid #ffffff;
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.8); position: relative;
+        }
+        .mole.bomb .bomb-doll { display: block;
+        }
+        .bomb-doll .fuse-top { position: absolute; top: -10%; left: 50%; transform: translateX(-50%);
+            width: 26%; height: 14%; background-color: #333; border: 1px solid #fff; border-radius: 2px;
+        }
+        .bomb-doll .fuse-cord { position: absolute; top: -28%; left: 55%; width: 6%;
+            height: 22%; background-color: #ffb703; transform: rotate(15deg); box-shadow: 0 0 5px #ffb703;
+        }
+        .bomb-doll .cross-eye { position: absolute; top: 32%; width: 24%; height: 24%;
+        }
+        .bomb-doll .cross-eye.left { left: 18%; } .bomb-doll .cross-eye.right { right: 18%;
+        }
+        .bomb-doll .cross-eye::before, .bomb-doll .cross-eye::after { content: ''; position: absolute; top: 40%;
+            left: 0; width: 100%; height: 16%; background-color: #ffffff; border-radius: 1.5px;
+        }
+        .bomb-doll .cross-eye::before { transform: rotate(45deg); } .bomb-doll .cross-eye::after { transform: rotate(-45deg);
+        }
+        .bomb-doll .brow { position: absolute; top: 18%; width: 26%; height: 8%;
+            background-color: #000000; border-radius: 1.5px; }
+        .bomb-doll .brow.left { left: 14%; transform: rotate(20deg);
+        } .bomb-doll .brow.right { right: 14%; transform: rotate(-20deg); }
 
         /* 特效與動畫 */
-        .mole.hit { filter: brightness(2) scale(0.85); transition: all 0.05s ease-out; }
-        .floating-text { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 5vmin; font-weight: bold; pointer-events: none; z-index: 55; white-space: nowrap; animation: floatUp 0.6s ease-out forwards; }
-        @keyframes floatUp { 0% { opacity: 1; top: 30%; transform: translateX(-50%) scale(0.8); } 100% { opacity: 0; top: -50%; transform: translateX(-50%) scale(1.4); } }
-        @keyframes flashUpgrade { 0% { background: rgba(0, 255, 204, 0.2); transform: scale(1); } 50% { background: rgba(0, 255, 204, 0.6); transform: scale(1.05); } 100% { background: rgba(255, 255, 255, 0.06); transform: scale(1); } }
-        .flash-upgrade { animation: flashUpgrade 0.5s ease-out 2; }
-        @keyframes flashDamage { 0% { background: rgba(255, 0, 85, 0.4); } 100% { background: #071e22; } }
-        .flash-damage { animation: flashDamage 0.4s ease-out 1; }
+        .mole.hit { filter: brightness(2) scale(0.85);
+            transition: all 0.05s ease-out; }
+        .floating-text { position: absolute; top: -10px; left: 50%;
+            transform: translateX(-50%); font-size: 5vmin; font-weight: bold; pointer-events: none; z-index: 55; white-space: nowrap; animation: floatUp 0.6s ease-out forwards;
+        }
+        @keyframes floatUp { 0% { opacity: 1; top: 30%; transform: translateX(-50%) scale(0.8);
+        } 100% { opacity: 0; top: -50%; transform: translateX(-50%) scale(1.4);
+        } }
+        @keyframes flashUpgrade { 0% { background: rgba(0, 255, 204, 0.2);
+            transform: scale(1); } 50% { background: rgba(0, 255, 204, 0.6); transform: scale(1.05); } 100% { background: rgba(255, 255, 255, 0.06);
+            transform: scale(1); } }
+        .flash-upgrade { animation: flashUpgrade 0.5s ease-out 2;
+        }
+        @keyframes flashDamage { 0% { background: rgba(255, 0, 85, 0.4);
+        } 100% { background: #071e22; } }
+        .flash-damage { animation: flashDamage 0.4s ease-out 1;
+        }
 
         /* ==========================================================================
            5. 滿版大畫面覆蓋層
            ========================================================================== */
-        .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 30, 34, 0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; padding: 20px; text-align: center; }
-        .overlay.hide { display: none; }
-        .overlay h1 { font-size: 7vmin; max-size: 52px; color: #52b788; margin-bottom: 12px; text-shadow: 0 0 25px rgba(82,183,136,0.5); }
-        .overlay p { font-size: 3.8vmin; max-size: 24px; color: #94a3b8; margin-bottom: 20px; line-height: 1.5; max-width: 650px; }
-        .selector-title { font-size: 3.8vmin; max-size: 22px; color: #ffb703; font-weight: bold; margin-bottom: 12px; }
-        .time-options { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
-        .opt-btn { font-size: 16px; font-weight: bold; color: #ffffff; background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; cursor: pointer; }
-        @media (min-width: 768px) { .opt-btn { font-size: 24px; padding: 14px 35px; border-width: 3px; border-radius: 15px; } .time-options { gap: 20px; } }
-        .opt-btn.active { background: #2d6a4f; border-color: #39ff14; box-shadow: 0 0 20px rgba(57,255,20,0.4); transform: scale(1.03); }
-        .result-card { background: rgba(255, 255, 255, 0.04); border: 2px solid #52b788; border-radius: 20px; padding: 20px 40px; margin-bottom: 30px; box-shadow: 0 0 40px rgba(82,183,136,0.2); display: flex; gap: 20px; }
-        @media (min-width: 768px) { .result-card { border-width: 3px; border-radius: 28px; padding: 35px 60px; gap: 40px; margin-bottom: 40px; } }
-        .result-sub-box { text-align: center; }
-        .result-score { font-size: 44px; font-weight: bold; color: #39ff14; text-shadow: 0 0 25px rgba(57,255,20,0.5); }
-        @media (min-width: 768px) { .result-score { font-size: 64px; } }
-        .btn-start { font-size: 22px; font-weight: bold; color: #071e22; background: linear-gradient(135deg, #52b788, #39ff14); border: none; padding: 14px 45px; border-radius: 40px; cursor: pointer; box-shadow: 0 6px 20px rgba(57, 255, 20, 0.5); }
-        @media (min-width: 768px) { .btn-start { font-size: 32px; padding: 22px 70px; border-radius: 60px; box-shadow: 0 8px 30px rgba(57, 255, 20, 0.5); } }
-        .btn-start:active { transform: scale(0.95); }
+        .overlay { position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(7, 30, 34, 0.98); display: flex; flex-direction: column; align-items: center;
+            justify-content: center; z-index: 100; padding: 20px; text-align: center; }
+        .overlay.hide { display: none;
+        }
+        .overlay h1 { font-size: 7vmin; max-size: 52px; color: #52b788; margin-bottom: 12px;
+            text-shadow: 0 0 25px rgba(82,183,136,0.5); }
+        .overlay p { font-size: 3.8vmin; max-size: 24px;
+            color: #94a3b8; margin-bottom: 20px; line-height: 1.5; max-width: 650px; }
+        .selector-title { font-size: 3.8vmin;
+            max-size: 22px; color: #ffb703; font-weight: bold; margin-bottom: 12px; }
+        .time-options { display: flex;
+            gap: 10px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
+        .opt-btn { font-size: 16px;
+            font-weight: bold; color: #ffffff; background: rgba(255, 255, 255, 0.08); border: 2px solid rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; cursor: pointer;
+        }
+        @media (min-width: 768px) { .opt-btn { font-size: 24px; padding: 14px 35px;
+            border-width: 3px; border-radius: 15px; } .time-options { gap: 20px; } }
+        .opt-btn.active { background: #2d6a4f;
+            border-color: #39ff14; box-shadow: 0 0 20px rgba(57,255,20,0.4); transform: scale(1.03); }
+        .result-card { background: rgba(255, 255, 255, 0.04);
+            border: 2px solid #52b788; border-radius: 20px; padding: 20px 40px; margin-bottom: 30px; box-shadow: 0 0 40px rgba(82,183,136,0.2); display: flex; gap: 20px;
+        }
+        @media (min-width: 768px) { .result-card { border-width: 3px; border-radius: 28px;
+            padding: 35px 60px; gap: 40px; margin-bottom: 40px; } }
+        .result-sub-box { text-align: center;
+        }
+        .result-score { font-size: 44px; font-weight: bold; color: #39ff14;
+            text-shadow: 0 0 25px rgba(57,255,20,0.5); }
+        @media (min-width: 768px) { .result-score { font-size: 64px;
+        } }
+        .btn-start { font-size: 22px; font-weight: bold; color: #071e22;
+            background: linear-gradient(135deg, #52b788, #39ff14); border: none; padding: 14px 45px; border-radius: 40px; cursor: pointer;
+            box-shadow: 0 6px 20px rgba(57, 255, 20, 0.5); }
+        @media (min-width: 768px) { .btn-start { font-size: 32px;
+            padding: 22px 70px; border-radius: 60px; box-shadow: 0 8px 30px rgba(57, 255, 20, 0.5);
+        } }
+        .btn-start:active { transform: scale(0.95);
+        }
         
-        .cloud-sync-status { font-size: 14px; color: #94a3b8; font-weight: bold; margin-top: 10px; }
+        .cloud-sync-status { font-size: 14px;
+            color: #94a3b8; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -186,11 +292,13 @@
         <div class="input-display-container">
             <div class="input-row">
                 <span class="input-label">登入名稱：</span>
-                <input type="text" id="display-number" class="native-input" placeholder="請點此輸入名稱" autocomplete="off">
+                <input type="text" id="display-number" 
+                    class="native-input" placeholder="請點此輸入名稱" autocomplete="off">
             </div>
             <div class="input-row">
                 <span class="input-label">輸入密碼：</span>
-                <input type="tel" id="display-password" class="native-input" placeholder="請點此輸入密碼" style="-webkit-text-security: disc; text-security: disc;" autocomplete="off">
+                <input type="tel" id="display-password" class="native-input" placeholder="請點此輸入密碼" style="-webkit-text-security: disc; text-security: disc;"
+                    autocomplete="off">
             </div>
         </div>
 
@@ -203,7 +311,8 @@
 
     <div class="header-bar">
         <div class="stat-box">
-            <div class="stat-label">遊戲模式</div>
+            <div 
+                class="stat-label">遊戲模式</div>
             <div class="stat-value player-value" id="player-display">1 人玩</div>
         </div>
         <div class="stat-box">
@@ -212,6 +321,7 @@
         </div>
         <div class="stat-box">
             <div class="stat-label">龍舟生命值</div>
+        
             <div class="boats-container" id="hearts-display"></div>
         </div>
         <div class="stat-box" id="score-box">
@@ -225,6 +335,7 @@
     <div id="start-overlay" class="overlay hide">
         <h1>端午奪粽大作戰</h1>
         <p>每隊共享 3 隻龍舟機會，生命值扣完即提早結算！請設定遊戲參數：</p>
+    
         
         <div class="selector-title">選擇參與人數</div>
         <div class="time-options" style="margin-bottom: 25px;">
@@ -234,7 +345,8 @@
         </div>
 
         <div class="selector-title">設定一局的時間</div>
-        <div class="time-options" style="margin-bottom: 40px;">
+        <div class="time-options" 
+            style="margin-bottom: 40px;">
             <button class="opt-btn" id="t30-btn">30 秒體驗</button>
             <button class="opt-btn active" id="t60-btn">60 秒標準</button>
             <button class="opt-btn" id="t90-btn">90 秒挑戰</button>
@@ -246,14 +358,17 @@
     <div id="result-overlay" class="overlay hide">
         <h1 id="result-title">團隊活化大成功</h1>
         <p id="result-desc">配合著輕快熱鬧的背景音樂，大家的默契與反應力表現得非常精彩！</p>
+      
         <div class="result-card">
             <div class="result-sub-box">
                 <div class="stat-label" style="font-size: 22px;">共奪得</div>
                 <div class="result-score"><span id="final-score">0</span> 顆肉粽</div>
             </div>
-            <div class="result-sub-box" style="border-left: 2px solid rgba(255,255,255,0.2); padding-left: 40px;">
+            <div class="result-sub-box" style="border-left: 2px solid rgba(255,255,255,0.2);
+                padding-left: 40px;">
                 <div class="stat-label" style="font-size: 22px;">挑戰模式</div>
-                <div class="result-score" id="final-mode" style="color: #00ffcc; font-size: 44px;">1 人玩</div>
+                <div class="result-score" id="final-mode" style="color: #00ffcc;
+                    font-size: 44px;">1 人玩</div>
             </div>
         </div>
         <button class="btn-start" id="replay-btn">再玩一局重整旗鼓</button>
@@ -281,7 +396,6 @@
 
         nameInputEl.addEventListener('focus', () => playSound('success'));
         passInputEl.addEventListener('focus', () => playSound('success'));
-
         loginSubmitBtn.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             errorDisplay.innerText = ""; 
@@ -291,6 +405,7 @@
 
             if (inputUser === "" || inputPass === "") {
                 playSound('bomb');
+    
                 errorDisplay.innerText = "⚠️ 請填寫完整的名稱與密碼喔！";
                 return;
             }
@@ -307,6 +422,7 @@
             .then(usersObj => {
                 loginSubmitBtn.disabled = false;
                 
+      
                 // 比對大寫/小寫一致的 A 欄 (ID 鍵值) 以及其內部的 pw 屬性值
                 if (usersObj[inputUser] && usersObj[inputUser].pw === inputPass) {
                     playSound('success');
@@ -328,6 +444,7 @@
                 loginSubmitBtn.disabled = false;
                 console.error("驗證連線失敗:", err);
                 errorDisplay.style.color = "#ff0055";
+             
                 errorDisplay.innerText = "⚠️ 雲端連線失敗，請檢查網路或確認 GAS 是否正常部署。";
                 playSound('bomb');
             });
@@ -342,7 +459,6 @@
             const gainNode = audioCtx.createGain();
             osc.connect(gainNode);
             gainNode.connect(audioCtx.destination);
-
             if (type === 'success') {
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
@@ -375,7 +491,7 @@
                 gainNode.connect(audioCtx.destination);
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(melody[beat % melody.length], audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.07, audioCtx.currentTime); 
+                gainNode.gain.setValueAtTime(0.07, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (spawnInterval / 2000));
                 osc.start();
                 osc.stop(audioCtx.currentTime + (spawnInterval / 2000));
@@ -385,7 +501,8 @@
             playNote();
         }
 
-        function stopBGM() { if (bgmNode) { clearTimeout(bgmNode); bgmNode = null; } }
+        function stopBGM() { if (bgmNode) { clearTimeout(bgmNode); bgmNode = null;
+        } }
 
         function triggerHaptic(type) {
             if (navigator.vibrate) {
@@ -397,18 +514,18 @@
         /* ==========================================================================
            ⏱ 核心遊戲與限時命值算法控制
            ========================================================================== */
-        let moles; 
+        let moles;
         let score = 0;
         let speedLevel = 1;
         let lives = 3; 
         let mainGameLoop = null;
-        let countdownTimer = null; 
+        let countdownTimer = null;
         let activeRetractTimers = []; 
         let isGameRunning = false;
         
         let playerCount = 1; 
         let totalGridCount = 25; 
-        let selectedDuration = 60; 
+        let selectedDuration = 60;
         let timeRemaining = 60;
 
         let moleUpDuration = 1400;  
@@ -417,7 +534,6 @@
         document.getElementById('p1-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); changePlayer(1, 'p1-btn'); });
         document.getElementById('p2-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); changePlayer(2, 'p2-btn'); });
         document.getElementById('p4-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); changePlayer(4, 'p4-btn'); });
-
         function changePlayer(count, id) {
             playerCount = count;
             document.getElementById('p1-btn').classList.remove('active');
@@ -431,7 +547,6 @@
         document.getElementById('t30-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); changeTime(30, 't30-btn'); });
         document.getElementById('t60-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); changeTime(60, 't60-btn'); });
         document.getElementById('t90-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); changeTime(90, 't90-btn'); });
-
         function changeTime(seconds, id) {
             selectedDuration = seconds;
             document.getElementById('t30-btn').classList.remove('active');
@@ -441,7 +556,13 @@
         }
 
         document.getElementById('actual-start-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); startGame(); });
-        document.getElementById('replay-btn').addEventListener('pointerdown', (e) => { e.preventDefault(); startGame(); });
+        
+        // 🛠️ 已更新：點擊「再玩一局重整旗鼓」按鈕時，隱藏結算畫面並拉回參數選擇面板
+        document.getElementById('replay-btn').addEventListener('pointerdown', (e) => { 
+            e.preventDefault(); 
+            document.getElementById('result-overlay').classList.add('hide');
+            document.getElementById('start-overlay').classList.remove('hide');
+        });
 
         function generateGrid() {
             const stage = document.getElementById('game-stage');
@@ -462,21 +583,25 @@
                     <div class="mole" data-index="${i}">
                         <div class="zongzi-doll">
                             <div class="horn left"></div><div class="horn right"></div>
+                
                             <div class="eye left"></div><div class="eye right"></div>
                             <div class="blush left"></div><div class="blush right"></div>
                             <div class="mouth"></div>
+                       
                             <div class="rope"><div class="rope-badge"></div></div>
                         </div>
                         <div class="bomb-doll">
                             <div class="fuse-top"></div><div class="fuse-cord"></div>
+              
                             <div class="brow left"></div><div class="brow right"></div>
                             <div class="cross-eye left"></div><div class="cross-eye right"></div>
                         </div>
                     </div>
+      
                 `;
                 stage.appendChild(hole);
             }
-            bindMoleEvents(); 
+            bindMoleEvents();
         }
 
         function bindMoleEvents() {
@@ -486,14 +611,17 @@
                     e.preventDefault();
                     if (!isGameRunning) return;
                     
+                 
                     if (mole.classList.contains('up') && !mole.classList.contains('hit')) {
                         mole.classList.add('hit');
                         
                         if (mole.classList.contains('good')) {
+                   
                             score += 1;
                             document.getElementById('score').innerText = score;
                             playSound('success');
                             triggerHaptic('success');
+   
                             showFloatingText(mole, '+1 奪粽', '#39ff14');
 
                             if (score > 0 && score % 10 === 0) {
@@ -501,6 +629,7 @@
                                 adjustDifficultyDynamic();
                             }
                         } else if (mole.classList.contains('bomb')) {
+            
                             if (playerCount === 1) {
                                 handleDamage("🛶 龍舟翻船啦！");
                             } else {
@@ -525,7 +654,7 @@
         }
 
         function handleDamage(floatingMessage) {
-            if (!isGameRunning || playerCount > 1) return; 
+            if (!isGameRunning || playerCount > 1) return;
             lives--;
             triggerHaptic('bomb');
             playSound('bomb');
@@ -537,7 +666,7 @@
             if (currentMoles.length > 0) {
                 showFloatingText(currentMoles[0], floatingMessage, '#ff0055');
             }
-            if (lives <= 0) endGame(true); 
+            if (lives <= 0) endGame(true);
         }
 
         function updateBoatsDisplay() {
@@ -588,18 +717,16 @@
             previousMoles.forEach(m => {
                 if (m.classList.contains('good') && !m.classList.contains('hit')) { missedGoodMole = true; }
             });
-
             const currentMoles = document.querySelectorAll('.mole');
             currentMoles.forEach(m => { if (!m.classList.contains('hit')) m.className = 'mole'; });
             activeRetractTimers.forEach(t => clearTimeout(t));
             activeRetractTimers = [];
-
             if (missedGoodMole) {
                 if (playerCount === 1) {
                     handleDamage("🛶 龍舟減速！");
                     if (lives <= 0) return; 
                 } else {
-                    playSound('bomb'); 
+                    playSound('bomb');
                 }
             }
 
@@ -610,15 +737,15 @@
                 else if (speedLevel === 3) currentSpawnCount = Math.floor(Math.random() * 2) + 2;
                 else currentSpawnCount = Math.floor(Math.random() * 2) + 3;
             } else if (playerCount === 2) {
-                if (speedLevel === 1) currentSpawnCount = Math.floor(Math.random() * 2) + 2; 
+                if (speedLevel === 1) currentSpawnCount = Math.floor(Math.random() * 2) + 2;
                 else if (speedLevel === 2) currentSpawnCount = Math.floor(Math.random() * 3) + 2;
                 else if (speedLevel === 3) currentSpawnCount = Math.floor(Math.random() * 3) + 3;
                 else currentSpawnCount = Math.floor(Math.random() * 4) + 4;
             } else if (playerCount === 4) {
-                if (speedLevel === 1) currentSpawnCount = Math.floor(Math.random() * 3) + 4; 
-                else if (speedLevel === 2) currentSpawnCount = Math.floor(Math.random() * 4) + 6; 
+                if (speedLevel === 1) currentSpawnCount = Math.floor(Math.random() * 3) + 4;
+                else if (speedLevel === 2) currentSpawnCount = Math.floor(Math.random() * 4) + 6;
                 else if (speedLevel === 3) currentSpawnCount = Math.floor(Math.random() * 4) + 7; 
-                else currentSpawnCount = Math.floor(Math.random() * 6) + 9; 
+                else currentSpawnCount = Math.floor(Math.random() * 6) + 9;
             }
 
             let holeIndexes = Array.from({length: totalGridCount}, (_, i) => i);
@@ -631,7 +758,6 @@
                 const isBomb = Math.random() < 0.25;
                 if (isBomb) chosenMole.classList.add('bomb', 'up');
                 else chosenMole.classList.add('good', 'up');
-
                 let timer = setTimeout(() => {
                     if (chosenMole.classList.contains('up') && !chosenMole.classList.contains('hit')) {
                         chosenMole.classList.remove('up');
@@ -646,6 +772,7 @@
                 timeRemaining--;
                 document.getElementById('time-display').innerText = timeRemaining + " 秒";
                 if (timeRemaining <= 0) endGame(false); 
+       
             }, 1000);
         }
 
@@ -666,7 +793,7 @@
 
             adjustDifficultyDynamic();
             startCountdown(); 
-            startBGM(); 
+            startBGM();
         }
 
         /* ==========================================================================
@@ -680,12 +807,14 @@
             // 配合您的 doPost 規格封裝對應的 A 至 E 欄位資料鍵值
             const gameDataPacket = {
                 caseId: nameInputEl.value.trim(),                                             // A. 登入人名稱
+       
                 name: selectedDuration + " 秒",                                               // B. 時間
-                trainingType: playerCount === 4 ? "4 人合作模式" : (playerCount === 2 ? "2 人合作模式" : "1 人玩"), // C. 玩咩模式
+                trainingType: playerCount === 4 ?
+                "4 人合作模式" : (playerCount === 2 ? "2 人合作模式" : "1 人玩"), // C. 玩咩模式
                 goldEarned: score,                                                            // D. 分數
+       
                 totalGold: new Date().toLocaleTimeString()                                    // E. 登出時間
             };
-
             // 精準發送 POST 請求至您的紀錄寫入端點 (DOPOST_URL)
             fetch(DOPOST_URL, {
                 method: "POST",
@@ -693,17 +822,20 @@
                 body: JSON.stringify(gameDataPacket)
             })
             .then(res => res.json())
+  
             .then(resData => {
                 if (resData.status === "success") {
                     statusIndicator.innerText = "雲端儲存成功！數據已填入試算表 A 至 E 欄";
                     statusIndicator.style.color = "#39ff14";
                 } else {
+  
                     throw new Error(resData.message);
                 }
             })
             .catch(err => {
                 console.error("雲端上傳異常:", err);
                 statusIndicator.innerText = "連線逾時，遊玩數據已安全暫存於本地端";
+   
                 statusIndicator.style.color = "#ff0055";
             });
         }
@@ -722,7 +854,6 @@
             if (playerCount === 2) modeName = "2 人合作模式";
             if (playerCount === 4) modeName = "4 人合作模式 (36格)";
             document.getElementById('final-mode').innerText = modeName;
-            
             if (isGameOverByLives) {
                 document.getElementById('result-title').innerText = "龍舟能量耗盡";
                 document.getElementById('result-title').style.color = "#ff0055";
